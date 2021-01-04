@@ -52,6 +52,7 @@ class HomePage extends StatelessWidget {
               ),
               scanButton(context),
             ],
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
       ),

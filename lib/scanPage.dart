@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -11,6 +14,19 @@ class Scanner extends StatefulWidget {
 class _ScannerState extends State<Scanner> {
   String qrData = "Not yet scanned";
   String macAddress = "Mac is not detected yet";
+  String message = "";
+  bool flag;
+
+  markTeacherAttendance(String mac, String qrdata) async {
+    String url = 'http://192.168.43.94:3000/teacher/mark-teacher-attendence';
+    String userid = qrdata.split("=")[1].split("&")[0];
+    String sequreid = qrdata.split("&")[1].split("=")[1];
+
+    return http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(
+            {'macid': mac, 'sequreid': sequreid, 'teacherid': userid}));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +45,9 @@ class _ScannerState extends State<Scanner> {
               height: 20,
             ),
             Text(
-              qrData,
-              style: TextStyle(fontSize: 10),
+              message,
+              style: TextStyle(fontSize: 30),
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 20,
@@ -46,9 +63,18 @@ class _ScannerState extends State<Scanner> {
               onPressed: () async {
                 String data = await BarcodeScanner.scan();
                 String mac = await GetMac.macAddress;
+                markTeacherAttendance(mac, data);
+                flag = true;
+
                 setState(() {
                   qrData = data;
                   macAddress = mac;
+
+                  if (flag) {
+                    message = "Attendance Marked Successfully";
+                  } else {
+                    message = "Sorry, attendance couldn't mark";
+                  }
                 });
               },
               child: Text(

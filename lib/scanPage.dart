@@ -18,7 +18,7 @@ class _ScannerState extends State<Scanner> {
   bool flag;
 
   markTeacherAttendance(String mac, String qrdata) async {
-    String url = 'http://192.168.43.94:3000/teacher/mark-teacher-attendence';
+    String url = 'http://18.218.167.174:3000/teacher/mark-teacher-attendence';
     String userid = qrdata.split("=")[1].split("&")[0];
     String sequreid = qrdata.split("&")[1].split("=")[1];
 
